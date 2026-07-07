@@ -22,9 +22,9 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager,
-                       JwtUtil jwtUtil) {
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager,
+            JwtUtil jwtUtil) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -35,20 +35,32 @@ public class AuthService {
     public String register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new IllegalArgumentException("Email already exists.");
+        }
+
+        // Default role
+        Role role = request.getRole();
+
+        if (role == null) {
+            role = Role.PATIENT;
+        }
+
+        // Only allow Patient and Doctor registration
+        if (role != Role.PATIENT && role != Role.DOCTOR) {
+            throw new IllegalArgumentException("Only PATIENT and DOCTOR registration is allowed.");
         }
 
         User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.PATIENT)
+                .role(role)
                 .enabled(true)
                 .build();
 
         userRepository.save(user);
 
-        return "User Registered Successfully";
+        return role + " Registered Successfully";
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -59,7 +71,7 @@ public class AuthService {
                         request.getPassword()));
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
 
         String token = jwtUtil.generateToken(user);
 

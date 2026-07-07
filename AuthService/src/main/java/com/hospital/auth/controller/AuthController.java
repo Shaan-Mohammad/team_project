@@ -9,6 +9,10 @@ import com.hospital.auth.dto.RegisterRequest;
 import com.hospital.auth.service.AuthService;
 
 import jakarta.validation.Valid;
+import java.util.Map;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,13 +30,24 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(request));
 
     }
-    
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
-            @RequestBody LoginRequest request){
+            @Valid @RequestBody LoginRequest request) {
 
         return ResponseEntity.ok(authService.login(request));
 
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> profile(Authentication authentication) {
+
+        UserDetails user = (UserDetails) authentication.getPrincipal();
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "email", user.getUsername(),
+                        "roles", user.getAuthorities()));
     }
 
 }
