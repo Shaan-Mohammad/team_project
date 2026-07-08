@@ -1,13 +1,12 @@
 package com.example.demo.service;
-package com.hospital.doctor.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.hospital.doctor.entity.Doctor;
-import com.hospital.doctor.exception.ResourceNotFoundException;
-import com.hospital.doctor.repository.DoctorRepository;
+import com.example.demo.entity.Doctor;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repo.DoctorRepository;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {

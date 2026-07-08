@@ -1,5 +1,0 @@
-package com.hospital.auth.util;
-
-public class JwtUtil {
-
-}

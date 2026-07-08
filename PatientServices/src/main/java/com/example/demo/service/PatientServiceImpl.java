@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Patient;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.PatientRepository;
+import com.example.demo.repo.PatientRepository;
 
 @Service
 public class PatientServiceImpl implements PatientService {
